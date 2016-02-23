@@ -1,0 +1,20 @@
+program PipeClient;
+
+uses
+  ExceptionLog,
+  Forms,
+  Main in 'Main.pas' {fmMain},
+  Pipes in 'Pipes.pas',
+  CommonPrintMonitor in 'CommonPrintMonitor.pas',
+  Constants in 'Constants.pas',
+  PrinterIPC in 'PrinterIPC.pas';
+
+{$R *.res}
+{$R 'administrator.res' 'administrator.rc'}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfmMain, fmMain);
+  Application.Run;
+end.

@@ -1,0 +1,14 @@
+KLINJDRIVER32 SYS D:\KioskLogix\Hooks\Build\KLInjDriver32.sys
+KLINJDRIVER64 SYS D:\KioskLogix\Hooks\Build\KLInjDriver64.sys
+NSKBFILTR2K_I386 SYS D:\KioskLogix\Hooks\Build\Res\2K\i386\Release\NSKbFiltr2K.sys
+NSKBFILTR2K_I386_DBG SYS D:\KioskLogix\Hooks\Build\Res\2K\i386\Debug\NSKbFiltr2K.sys
+NSKBFILTRXP_I386 SYS D:\KioskLogix\Hooks\Build\Res\XP\i386\Release\NSKbFiltr.sys
+NSKBFILTRXP_I386_DBG SYS D:\KioskLogix\Hooks\Build\Res\XP\i386\Debug\NSKbFiltr.sys
+NSKBFILTRVISTA_I386 SYS D:\KioskLogix\Hooks\Build\Res\Vista\i386\Release\NSKbFiltr.sys
+NSKBFILTRVISTA_I386_DBG SYS D:\KioskLogix\Hooks\Build\Res\Vista\i386\Debug\NSKbFiltr.sys
+NSKBFILTRVISTA_X64 SYS D:\KioskLogix\Hooks\Build\Res\Vista\x64\Release\NSKbFiltr.sys
+NSKBFILTRVISTA_X64_DBG SYS D:\KioskLogix\Hooks\Build\Res\Vista\x64\Debug\NSKbFiltr.sys
+NSKBFILTRWIN7_I386 SYS D:\KioskLogix\Hooks\Build\Res\Vista\i386\Release\NSKbFiltr.sys
+NSKBFILTRWIN7_I386_DBG SYS D:\KioskLogix\Hooks\Build\Res\Vista\i386\Debug\NSKbFiltr.sys
+NSKBFILTRWIN7_X64 SYS D:\KioskLogix\Hooks\Build\Res\Vista\x64\Release\NSKbFiltr.sys
+NSKBFILTRWIN7_X64_DBG SYS D:\KioskLogix\Hooks\Build\Res\Vista\x64\Debug\NSKbFiltr.sys

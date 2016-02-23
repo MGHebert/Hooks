@@ -1,0 +1,10 @@
+TARGETNAME=NSKbFiltr2K
+TARGETTYPE=DRIVER
+
+INCLUDES=c:\WinDDK\6000\inc 
+
+
+SOURCES=kbdcommon.c \
+        kbfiltr.c \
+        kbfiltr.rc
+

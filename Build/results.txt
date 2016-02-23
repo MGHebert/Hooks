@@ -1,0 +1,237 @@
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\PrintMonitor32.dll" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\PrintMonitor32.dll
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\PrintMonitor32.dll
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\PrintMonitor32.dll" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\PrintMonitor32.dll
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\PrintMonitor32.dll
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\PrintMonitor64.dll" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\PrintMonitor64.dll
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\PrintMonitor64.dll
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\PrintMonitor64.dll" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\PrintMonitor64.dll
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\PrintMonitor64.dll
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\PrintMonitorXP.dll" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\PrintMonitorXP.dll
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\PrintMonitorXP.dll
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\PrintMonitorXP.dll" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\PrintMonitorXP.dll
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\PrintMonitorXP.dll
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>copy /Y renameme32.sys KLInjDriver32.sys 
+        1 file(s) copied.
+
+D:\KioskLogix\Hooks\Build>copy /Y renameme64.sys KLInjDriver64.sys 
+        1 file(s) copied.
+
+D:\KioskLogix\Hooks\Build>madConfigDrv KLInjDriver32.sys KioskLogixAPI PrintMonitorXP.dll PrintMonitor32.dll -unsafeStopAllowed 
+
+D:\KioskLogix\Hooks\Build>madConfigDrv KLInjDriver64.sys KioskLogixAPI PrintMonitorXP.dll PrintMonitor32.dll PrintMonitor64.dll -unsafeStopAllowed 
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\KLInjDriver32.sys" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\KLInjDriver32.sys
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\KLInjDriver32.sys
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\KLInjDriver32.sys" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\KLInjDriver32.sys
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\KLInjDriver32.sys
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\KLInjDriver64.sys" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\KLInjDriver64.sys
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\KLInjDriver64.sys
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\KLInjDriver64.sys" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\KLInjDriver64.sys
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\KLInjDriver64.sys
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\ShellProServices32.exe" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\ShellProServices32.exe
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\ShellProServices32.exe
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\ShellProServices32.exe" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\ShellProServices32.exe
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\ShellProServices32.exe
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /f  "D:\Signing\KioskLogix_CodeSign.pfx" /p tygerwet04 /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\ShellProServices64.exe" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\ShellProServices64.exe
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\ShellProServices64.exe
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>"D:\KioskLogix\Hooks\Build\signtool.exe" sign /v /ph /ac "D:\Signing\MSCV-GlobalSign.cer" /s my /n "Kiosk Logix LLC" /d "KioskLogix" /du "http://www.kiosklogix.com" /t "http://timestamp.globalsign.com/scripts/timstamp.dll" "D:\KioskLogix\Hooks\Build\ShellProServices64.exe" 
+The following certificate was selected:
+    Issued to: Kiosk Logix LLC
+    Issued by: GlobalSign ObjectSign CA
+    Expires:   10/13/2010 8:31:06 PM
+    SHA1 hash: 61F44FFA5C487A5270204564E424237F3D0C91D3
+
+Done Adding Additional Store
+
+Attempting to sign: D:\KioskLogix\Hooks\Build\ShellProServices64.exe
+Successfully signed and timestamped: D:\KioskLogix\Hooks\Build\ShellProServices64.exe
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+D:\KioskLogix\Hooks\Build>pause
+Press any key to continue . . . 

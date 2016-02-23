@@ -1,0 +1,191 @@
+unit Main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Pipes, StdCtrls, ExtCtrls, MadCodeHook, CommonPrintMonitor,
+  PrinterIPC, IdIOHandler, IdIOHandlerStream, IdBaseComponent, IdComponent,
+  IdTCPConnection, IdTCPClient;
+
+type
+  TfmMain = class(TForm)
+    gbPipeControl: TGroupBox;
+    pnBottom: TPanel;
+    memLog: TMemo;
+    Label1: TLabel;
+    ebAllowedPages: TEdit;
+    btnClear: TButton;
+    PrtSvcClient: TIdTCPClient;
+    iohInject: TIdIOHandlerStream;
+    Label2: TLabel;
+    ebErrorCode: TEdit;
+    procedure btnClearClick(Sender: TObject);
+  private
+    { Private declarations }
+    FPipe: TPipeServer;
+    procedure AddToLog(AString : String);
+    procedure HandlePrintNotification;
+    procedure PipeConnect(Sender: TObject; Pipe: HPIPE);
+    procedure PipeDisconnect(Sender: TObject; Pipe: HPIPE);
+    procedure PipeMessage(Sender: TObject; Pipe: HPIPE; Stream: TStream);
+    procedure PipeSent(Sender: TObject; Pipe: HPIPE; Size: DWORD);
+    procedure PipeError(Sender: TObject; Pipe: HPIPE; PipeContext: TPipeContext; ErrorCode: Integer);
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+var
+  fmMain: TfmMain;
+  FMap: TPrinterIPC;
+
+implementation
+
+{$R *.dfm}
+
+procedure IpcPrintMessageCallback(Name: PAnsiChar; MessageBuf: Pointer; MessageLen: DWORD;
+                                  AnswerBuf: Pointer; AnswerLen: DWORD); stdcall;
+begin
+  // Forward the ipc message to the form
+  case FMap.PrintAPI of
+    paCreateDC: fmMain.AddToLog('Running IPC Callback, paCreateDC');
+    paStartDoc: fmMain.AddToLog('Running IPC Callback, paStartDoc');
+    paStartPage: fmMain.AddToLog('Running IPC Callback, paStartPage');
+    paEndPage: fmMain.AddToLog('Running IPC Callback, paEndPage');
+    paEndDoc: fmMain.AddToLog('Running IPC Callback, paEndDoc');
+    paNoActivity: fmMain.AddToLog('Running IPC Callback, paNoActivity');
+  else
+    fmMain.AddToLog('Running IPC Callback, Unknown PrintAPI');
+  end;
+  fmMain.HandlePrintNotification;
+end;
+
+procedure TfmMain.btnClearClick(Sender: TObject);
+begin
+  memLog.Lines.Clear;
+end;
+
+constructor TfmMain.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPipe := TPipeServer.CreateUnowned;
+  FPipe.OnPipeSent := PipeSent;
+  FPipe.OnPipeConnect := PipeConnect;
+  FPipe.OnPipeDisconnect := PipeDisconnect;
+  FPipe.OnPipeMessage := PipeMessage;
+  FPipe.OnPipeError := PipeError;
+  FPipe.PipeName := 'PrintMonitorPipe';
+  FPipe.Active := True;
+  FMap := TPrinterIPC.Create;
+  //CreateIpcQueue(PAnsiChar('PrintMonitorIPC'), IpcPrintMessageCallback);
+  AddToLog('Sizeof PrintNotification = ' + IntToStr(Sizeof(TPrintNotification)));
+  AddToLog('Sizeof PrinterName = ' + IntToStr(Sizeof(TPrinterName)));
+end;
+
+destructor TfmMain.Destroy;
+begin
+  FPipe.Active := False;
+  FPipe.Free;
+  FMap.Free;
+  inherited Destroy;
+end;
+
+procedure TfmMain.AddToLog(AString : String);
+begin
+  memLog.Lines.Add(FormatDateTime('DD-MMM-YYYY hh:nn:ss.zzz', Now) + ' ' + AString);
+end;
+
+procedure TfmMain.HandlePrintNotification;
+begin
+  case FMap.PrintAPI of
+    paCreateDC:
+    begin
+      AddToLog('PrintAPI = paCreateDC');
+      // Get the price per page for the printer used for that document
+      // and set the current price per page.
+      AddToLog('Printer = ' + FMap.PrinterName);
+
+      // Compute how many pages can be printed and send this info to the print monitor.
+      AddToLog('Setting Allowed Pages');
+      //SetPagesAllowed(GetPagesPrintedAllowed);
+      FMap.PagesAllowed := StrToIntDef(ebAllowedPages.Text, 0);
+      AddToLog('Allowed Pages Set To ' + IntToStr(FMap.PagesAllowed));
+    end;
+
+    paStartDoc:
+    begin
+      AddToLog('PrintAPI = paStartDoc');
+      FMap.PagesAllowed := StrToIntDef(ebAllowedPages.Text, 0);
+      AddToLog('Pages Allowed = ' + IntToStr(FMap.PagesAllowed));
+    end;
+
+    paEndDoc:
+    begin
+      AddToLog('PrintAPI = paEndDoc');
+      AddToLog('Pages Printed = ' + IntToStr(FMap.PagesPrinted));
+      if FMap.PagesRejected > 0 then
+        AddToLog('Pages Regected = ' + IntToStr(FMap.PagesRejected));
+    end;
+  end;
+end;
+
+procedure TfmMain.PipeConnect(Sender: TObject; Pipe: HPIPE);
+begin
+  AddToLog('Pipe Connect');
+end;
+
+procedure TfmMain.PipeDisconnect(Sender: TObject; Pipe: HPIPE);
+begin
+  AddToLog('Pipe Disconnect');
+end;
+
+procedure TfmMain.PipeMessage(Sender: TObject; Pipe: HPIPE; Stream: TStream);
+var
+  LStream: TMemoryStream;
+  LReply: TPrintReply;
+  LNotification: TPrintNotification;
+begin
+  AddToLog('Pipe Message, Stream Size = ' + IntToStr(Stream.Size));
+  Stream.ReadBuffer(LNotification, Sizeof(TPrintNotification));
+  AddToLog('Received Buffer From Pipe ' + IntToStr(Pipe));
+  AddToLog('  PrintAPI = ' + IntToStr(Ord(LNotification.PrintAPI)));
+  AddToLog('  PrinterName = ' + String(LNotification.PrinterName));
+  AddToLog('  PagesPrinted = ' + IntToStr(LNotification.NumberOfPagesPrinted));
+  AddToLog('  PagesRejected = ' + IntToStr(LNotification.NumberOfPagesRejected));
+
+
+  //if 2 = Ord(LNotification.PrintAPI) then
+  //  ShowMessage('paEndDoc');
+  HandlePrintNotification;
+
+  LStream := TMemoryStream.Create;
+  try
+    LReply.ErrorCode := StrToIntDef(ebErrorCode.Text, 3);
+    AddToLog('Writing ' + IntToStr(LStream.Write(LReply, Sizeof(TPrintReply))) + ' bytes to stream');
+    AddToLog('Sending Reply, Stream Size = ' + IntToStr(Lstream.Size));
+    LStream.Seek(0,0);
+    FPipe.Write(Pipe, LReply, Sizeof(LReply));
+    //FPipe.SendStream(Pipe, LStream);
+    FPipe.Disconnect(Pipe);
+  finally
+    LStream.Free;
+  end;
+
+end;
+
+procedure TfmMain.PipeSent(Sender: TObject; Pipe: HPIPE; Size: DWORD);
+begin
+  AddToLog('Pipe Sent');
+end;
+
+procedure TfmMain.PipeError(Sender: TObject; Pipe: HPIPE; PipeContext: TPipeContext; ErrorCode: Integer);
+begin
+  case PipeContext of
+    pcListener: AddToLog('Pipe Error. Context = pcListener, Error Code = ' + IntToStr(ErrorCode));
+    pcWorker: AddToLog('Pipe Error. Context = pcWorker, Error Code = ' + IntToStr(ErrorCode));
+  end;
+end;
+
+end.

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2010/01/21 21:14:01.896.pas,C:\Users\ntavendale\Documents\RAD Studio\Projects\Unit1.pas=D:\KioskLogix\Hooks\PipeClient\src\Main.pas</Transaction>
+    <Transaction>2010/01/21 21:14:01.896.dfm,C:\Users\ntavendale\Documents\RAD Studio\Projects\Unit1.dfm=D:\KioskLogix\Hooks\PipeClient\src\Main.dfm</Transaction>
+    <Transaction>2010/01/21 21:14:15.877.dproj,C:\Users\ntavendale\Documents\RAD Studio\Projects\Project1.dproj=D:\KioskLogix\Hooks\PipeClient\src\PipeClient.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

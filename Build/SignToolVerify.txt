@@ -1,0 +1,40 @@
+
+Verifying: \Users\MH\Documents\Visual Studio 2008\Projects\Hooks\Build\ShellProServices32.exe
+SHA1 hash of file: 9125136F58FBE5440F71367265313276CE6B8360
+Signing Certificate Chain:
+    Issued to: GlobalSign Root CA
+    Issued by: GlobalSign Root CA
+    Expires:   1/28/2028 7:00:00 AM
+    SHA1 hash: B1BC968BD4F49D622AA89A81F2150152A41D829C
+
+        Issued to: GlobalSign CodeSigning CA - G2
+        Issued by: GlobalSign Root CA
+        Expires:   4/13/2019 5:00:00 AM
+        SHA1 hash: 9000401777DD2B43393D7B594D2FF4CBA4516B38
+
+            Issued to: Kiosk Logix LLC
+            Issued by: GlobalSign CodeSigning CA - G2
+            Expires:   12/6/2015 7:32:02 PM
+            SHA1 hash: 18A4A8462CD28C9C1E5002AD7497FCD9B751F362
+
+The signature is timestamped: 11/5/2014 6:05:23 PM
+Timestamp Verified by:
+    Issued to: GlobalSign Root CA
+    Issued by: GlobalSign Root CA
+    Expires:   1/28/2028 7:00:00 AM
+    SHA1 hash: B1BC968BD4F49D622AA89A81F2150152A41D829C
+
+        Issued to: GlobalSign Timestamping CA - G2
+        Issued by: GlobalSign Root CA
+        Expires:   1/28/2028 7:00:00 AM
+        SHA1 hash: C0E49D2D7D90A5CD427F02D9125694D5D6EC5B71
+
+            Issued to: GlobalSign TSA for MS Authenticode - G1
+            Issued by: GlobalSign Timestamping CA - G2
+            Expires:   9/22/2024 7:00:00 PM
+            SHA1 hash: 8CE69F5012E1D1A8FB395E2E31E2B42BDE3B343B
+
+
+Number of files successfully Verified: 0
+Number of warnings: 0
+Number of errors: 1

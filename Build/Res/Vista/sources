@@ -1,0 +1,23 @@
+TARGETNAME=NSKbFiltrVista
+TARGETTYPE=DRIVER
+
+
+KMDF_VERSION_MAJOR=1
+
+INF_NAME=kbfiltr
+
+TARGETLIBS=$(TARGETLIBS) \
+           $(DDK_LIB_PATH)\wdmsec.lib \
+           $(DDK_LIB_PATH)\ntstrsafe.lib
+
+MISCFILES=$(OBJ_PATH)\$(O)\$(INF_NAME).inf
+
+NTTARGETFILES=
+
+SOURCES=kbdcommon.c \
+        kbfiltr.c \
+        kbfiltr.rc \
+        rawpdo.c \
+
+
+

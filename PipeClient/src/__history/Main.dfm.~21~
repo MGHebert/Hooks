@@ -1,0 +1,107 @@
+object fmMain: TfmMain
+  Left = 465
+  Top = 229
+  Caption = 'Named Pipe Client'
+  ClientHeight = 355
+  ClientWidth = 623
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object gbPipeControl: TGroupBox
+    Left = 0
+    Top = 0
+    Width = 623
+    Height = 81
+    Align = alTop
+    Caption = 'Pipe Control'
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 69
+      Height = 13
+      Caption = 'Allowed Pages'
+    end
+    object Label2: TLabel
+      Left = 200
+      Top = 16
+      Width = 52
+      Height = 13
+      Caption = 'Error Code'
+    end
+    object ebAllowedPages: TEdit
+      Left = 8
+      Top = 35
+      Width = 69
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+    end
+    object btnClear: TButton
+      Left = 104
+      Top = 32
+      Width = 75
+      Height = 25
+      Caption = 'Clear'
+      TabOrder = 1
+      OnClick = btnClearClick
+    end
+    object ebErrorCode: TEdit
+      Left = 200
+      Top = 34
+      Width = 52
+      Height = 21
+      TabOrder = 2
+      Text = '2'
+    end
+    object ckbIE8Job: TCheckBox
+      Left = 280
+      Top = 32
+      Width = 97
+      Height = 17
+      Caption = 'IE 8 Job'
+      TabOrder = 3
+      OnClick = ckbIE8JobClick
+    end
+  end
+  object pnBottom: TPanel
+    Left = 0
+    Top = 314
+    Width = 623
+    Height = 41
+    Align = alBottom
+    TabOrder = 1
+  end
+  object memLog: TMemo
+    Left = 0
+    Top = 81
+    Width = 623
+    Height = 233
+    Align = alClient
+    ScrollBars = ssBoth
+    TabOrder = 2
+  end
+  object PrtSvcClient: TIdTCPClient
+    IOHandler = iohInject
+    ConnectTimeout = 0
+    IPVersion = Id_IPv4
+    Port = 0
+    ReadTimeout = -1
+    Left = 400
+    Top = 112
+  end
+  object iohInject: TIdIOHandlerStream
+    MaxLineAction = maException
+    Port = 0
+    FreeStreams = False
+    Left = 456
+    Top = 112
+  end
+end

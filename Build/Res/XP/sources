@@ -1,0 +1,10 @@
+TARGETNAME=NSKbFiltrXP
+TARGETTYPE=DRIVER
+
+INCLUDES=c:\WinDDK\6000\inc 
+
+
+SOURCES=kbfiltr.c \
+        kbdcommon.c \
+        kbfiltr.rc
+

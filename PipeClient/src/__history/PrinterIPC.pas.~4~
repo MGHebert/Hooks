@@ -1,0 +1,138 @@
+unit PrinterIPC;
+
+interface
+
+uses
+ Windows, CommonPrintMonitor;
+
+type
+  TPrinterIPC = class
+    private
+      function GetPagesAllowed: Integer;
+      procedure SetPagesAllowed(const AValue: Integer);
+      function GetPrintingReceipt: Boolean;
+      procedure SetPrintingReceipt(const AValue: Boolean);
+      function GetPrintAPI: DWORD;
+      procedure SetPrintAPI(const AValue: DWORD);
+      function GetPrinterName: String;
+      procedure SetPrinterName(const AValue: String);
+      function GetPagesPrinted: Integer;
+      procedure SetPagesPrinted(const AValue: Integer);
+      function GetPagesRejected: Integer;
+      procedure SetPagesRejected(const AValue: Integer);
+    public
+      constructor Create;
+      procedure Clear;
+      property PagesAllowed: Integer read GetPagesAllowed write SetPagesAllowed;
+      property PrintingReceipt: Boolean read GetPrintingReceipt write SetPrintingReceipt;
+      property PrintAPI: DWORD read GetPrintAPI write SetPrintAPI;
+      property PrinterName: String read GetPrinterName write SetPrinterName;
+      property PagesPrinted: Integer read GetPagesPrinted write SetPagesPrinted;
+      property PagesRejected: Integer read GetPagesRejected write SetPagesRejected;
+  end;
+
+implementation
+
+constructor TPrinterIPC.Create;
+begin
+  CreateRegistryKey(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY);
+end;
+
+function TPrinterIPC.GetPagesAllowed: Integer;
+const
+  VALUE_NAME = 'PagesAllowed';
+begin
+  Result := GetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME);
+end;
+
+procedure TPrinterIPC.SetPagesAllowed(const AValue: Integer);
+const
+  VALUE_NAME = 'PagesAllowed';
+begin
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, AValue);
+end;
+
+function TPrinterIPC.GetPrintingReceipt: Boolean;
+const
+  VALUE_NAME = 'PrintingReceipt';
+begin
+  Result := (0 <> GetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME));
+end;
+
+procedure TPrinterIPC.SetPrintingReceipt(const AValue: Boolean);
+const
+  VALUE_NAME = 'PrintingReceipt';
+begin
+  if not AValue then
+    SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, 0)
+  else
+    SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, 1);
+end;
+
+function TPrinterIPC.GetPrintAPI: DWORD;
+const
+  VALUE_NAME = 'PrintAPI';
+begin
+  Result := GetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME);
+end;
+
+procedure TPrinterIPC.SetPrintAPI(const AValue: DWORD);
+const
+  VALUE_NAME = 'PrintAPI';
+begin
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, Ord(AValue));
+end;
+
+function TPrinterIPC.GetPrinterName: String;
+const
+  VALUE_NAME = 'PrinterName';
+begin
+  Result := GetRegistryString(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME);
+end;
+
+procedure TPrinterIPC.SetPrinterName(const AValue: String);
+const
+  VALUE_NAME = 'PrinterName';
+begin
+  SetRegistryString(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, AValue);
+end;
+
+function TPrinterIPC.GetPagesPrinted: Integer;
+const
+  VALUE_NAME = 'PagesPrintedForJob';
+begin
+  Result := GetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME);
+end;
+
+procedure TPrinterIPC.SetPagesPrinted(const AValue: Integer);
+const
+  VALUE_NAME = 'PagesPrintedForJob';
+begin
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, AValue);
+end;
+
+function TPrinterIPC.GetPagesRejected: Integer;
+const
+  VALUE_NAME = 'PagesRejectedForJob';
+begin
+  Result := GetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME);
+end;
+
+procedure TPrinterIPC.SetPagesRejected(const AValue: Integer);
+const
+  VALUE_NAME = 'PagesRejectedForJob';
+begin
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, VALUE_NAME, AValue);
+end;
+
+procedure TPrinterIPC.Clear;
+begin
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, 'PagesAllowed', 0);
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, 'PrintingReceipt', 0);
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, 'PrintAPI', Ord(paNoActivity));
+  SetRegistryString(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, 'PrinterName', '');
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, 'PagesPrintedForJob', 0);
+  SetRegistryInt(HKEY_CURRENT_USER, SERVICE_PRINTER_IPC_REG_KEY, 'PagesRejectedForJob', 0);
+end;
+
+end.

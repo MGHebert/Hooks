@@ -1,0 +1,183 @@
+unit Main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, MadCodeHook, IdIOHandler, IdIOHandlerStream,
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, CommonPrintMonitor,
+  PrinterIPC, Pipes, PrintJobControler;
+
+type
+  TfmMain = class(TForm)
+    gbPipeControl: TGroupBox;
+    pnBottom: TPanel;
+    memLog: TMemo;
+    Label1: TLabel;
+    ebAllowedPages: TEdit;
+    btnClear: TButton;
+    PrtSvcClient: TIdTCPClient;
+    iohInject: TIdIOHandlerStream;
+    Label2: TLabel;
+    ebErrorCode: TEdit;
+    ckbPipeControl: TCheckBox;
+    procedure btnClearClick(Sender: TObject);
+    procedure ckbPipeControlClick(Sender: TObject);
+  private
+    { Private declarations }
+    FJobControler: TPrintJobControler;
+    procedure AddToLog(AString : String);
+    //Pipe Management Events
+    procedure PipeConnect(APipe: HPIPE);
+    procedure PipeDisconnect(APipe: HPIPE);
+    procedure PipeError(APipe: HPIPE; APipeContext: TPipeContext; AErrorCode: Integer);
+    procedure PipeDataSent(APipe: HPIPE; ASize: DWORD);
+    //Print Job Events
+    procedure OnCreateDC(APrintNotification: TPrintNotification);
+    procedure OnStartDoc(APrintNotification: TPrintNotification);
+    procedure OnStartPage(APrintNotification: TPrintNotification; AFirstPage: Boolean);
+    procedure OnEndPage(APrintNotification: TPrintNotification);
+    procedure OnEndDoc(APrintNotification: TPrintNotification);
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+var
+  fmMain: TfmMain;
+
+implementation
+
+{$R *.dfm}
+{===============================================================================
+  Custom Methods
+===============================================================================}
+constructor TfmMain.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FJobControler := TPrintJobControler.Create;
+  //Set Controler Events here
+  FJobControler.OnConnect := PipeConnect;
+  FJobControler.OnDisconnect := PipeDisconnect;
+  FJobControler.OnError := PipeError;
+  FJobControler.OnDataSent := PipeDataSent;
+  FJobControler.OnCreateDC := OnCreateDC;
+  FJobControler.OnStartDoc := OnStartDoc;
+  FJobControler.OnStartPage := OnStartPage;
+  FJobControler.OnEndPage := OnEndPage;
+  FJobControler.OnEndDoc := OnEndDoc;
+
+  ckbPipeControl.Checked := FJobControler.PipeControl;
+  FJobControler.OpenPipe;
+  AddToLog('Sizeof PrintNotification = ' + IntToStr(Sizeof(TPrintNotification)));
+  AddToLog('Sizeof PrinterName = ' + IntToStr(Sizeof(TPrinterName)));
+end;
+
+destructor TfmMain.Destroy;
+begin
+  FJobControler.ClosePipe;
+  inherited Destroy;
+end;
+
+procedure TfmMain.AddToLog(AString : String);
+begin
+  memLog.Lines.Add(FormatDateTime('DD-MMM-YYYY hh:nn:ss.zzz', Now) + ' ' + AString);
+end;
+
+procedure TfmMain.PipeConnect(APipe: HPIPE);
+begin
+  AddToLog('Pipe ' + Format('%8x', [APipe]) + ' Connected');
+end;
+
+procedure TfmMain.PipeDisconnect(APipe: HPIPE);
+begin
+  AddToLog('Pipe ' + Format('%8x', [APipe]) + ' Disconnected');
+end;
+
+procedure TfmMain.PipeError(APipe: HPIPE; APipeContext: TPipeContext; AErrorCode: Integer);
+begin
+  case APipeContext of
+    pcListener: AddToLog('Got Listener Error Code ' + IntToStr(AErrorCode) + ' from Pipe ' + Format('%8x', [APipe]));
+    pcWorker: AddToLog('Got Worker Error Code ' + IntToStr(AErrorCode) + ' from Pipe ' + Format('%8x', [APipe]));
+  end;
+end;
+
+procedure TfmMain.PipeDataSent(APipe: HPIPE; ASize: DWORD);
+begin
+  AddToLog('Sent ' + IntToStr(ASize) + ' bytes on Pipe ' + Format('%8x', [APipe]));
+end;
+
+procedure TfmMain.OnCreateDC(APrintNotification: TPrintNotification);
+begin
+  AddToLog('Got Create Envent');
+  AddToLog('    Application = ' + String(APrintNotification.AppName) );
+  AddToLog('    Printer = ' + String(APrintNotification.PrinterName) );
+  AddToLog('    ThreadID = ' + Format('%16x', [APrintNotification.ThreadID]) );
+  AddToLog('    Copies = ' + IntToStr(APrintNotification.Copies) );
+  AddToLog('    Pages Printed = ' + IntToStr(APrintNotification.NumberOfPagesPrinted) );
+  AddToLog('    Pages Rejected = ' + IntToStr(APrintNotification.NumberOfPagesRejected) );
+end;
+
+procedure TfmMain.OnStartDoc(APrintNotification: TPrintNotification);
+begin
+  AddToLog('Got StartDoc Envent');
+  AddToLog('    Application = ' + String(APrintNotification.AppName) );
+  AddToLog('    Printer = ' + String(APrintNotification.PrinterName) );
+  AddToLog('    ThreadID = ' + Format('%16x', [APrintNotification.ThreadID]) );
+  AddToLog('    Copies = ' + IntToStr(APrintNotification.Copies) );
+  AddToLog('    Pages Printed = ' + IntToStr(APrintNotification.NumberOfPagesPrinted) );
+  AddToLog('    Pages Rejected = ' + IntToStr(APrintNotification.NumberOfPagesRejected) );
+end;
+
+procedure TfmMain.OnStartPage(APrintNotification: TPrintNotification; AFirstPage: Boolean);
+begin
+  AddToLog('Got StartPage Envent');
+  AddToLog('    Application = ' + String(APrintNotification.AppName) );
+  AddToLog('    Printer = ' + String(APrintNotification.PrinterName) );
+  AddToLog('    ThreadID = ' + Format('%16x', [APrintNotification.ThreadID]) );
+  AddToLog('    Copies = ' + IntToStr(APrintNotification.Copies) );
+  AddToLog('    Pages Printed = ' + IntToStr(APrintNotification.NumberOfPagesPrinted) );
+  AddToLog('    Pages Rejected = ' + IntToStr(APrintNotification.NumberOfPagesRejected) );
+  if AFirstPage then
+  begin
+    FJobControler.PagesAllowed := StrToIntDef(ebAllowedpages.Text, 0);
+    FJobControler.PrintingReceipt := FALSE;
+  end;
+end;
+
+procedure TfmMain.OnEndPage(APrintNotification: TPrintNotification);
+begin
+  AddToLog('Got EndPage Envent');
+  AddToLog('    Application = ' + String(APrintNotification.AppName) );
+  AddToLog('    Printer = ' + String(APrintNotification.PrinterName) );
+  AddToLog('    ThreadID = ' + Format('%16x', [APrintNotification.ThreadID]) );
+  AddToLog('    Copies = ' + IntToStr(APrintNotification.Copies) );
+  AddToLog('    Pages Printed = ' + IntToStr(APrintNotification.NumberOfPagesPrinted) );
+  AddToLog('    Pages Rejected = ' + IntToStr(APrintNotification.NumberOfPagesRejected) );
+end;
+
+procedure TfmMain.OnEndDoc(APrintNotification: TPrintNotification);
+begin
+  AddToLog('Got EndDoc Envent');
+  AddToLog('    Application = ' + String(APrintNotification.AppName) );
+  AddToLog('    Printer = ' + String(APrintNotification.PrinterName) );
+  AddToLog('    ThreadID = ' + Format('%16x', [APrintNotification.ThreadID]) );
+  AddToLog('    Copies = ' + IntToStr(APrintNotification.Copies) );
+  AddToLog('    Pages Printed = ' + IntToStr(APrintNotification.NumberOfPagesPrinted) );
+  AddToLog('    Pages Rejected = ' + IntToStr(APrintNotification.NumberOfPagesRejected) );
+end;
+{===============================================================================
+  End Of Custom Methods
+===============================================================================}
+procedure TfmMain.btnClearClick(Sender: TObject);
+begin
+  memLog.Lines.Clear;
+end;
+
+procedure TfmMain.ckbPipeControlClick(Sender: TObject);
+begin
+  FJobControler.PipeControl := ckbPipeControl.Checked;
+end;
+
+end.

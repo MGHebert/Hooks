@@ -1,0 +1,200 @@
+unit PrintJobControler;
+
+interface
+
+uses
+  SysUtils, Classes, Windows, Registry, CommonPrintMonitor, PrinterIPC, Pipes;
+
+type
+  TOnConnect =  procedure(APipe: HPIPE) of object;
+  TOnDisconnect = procedure(APipe: HPIPE) of object;
+  TOnError = procedure(APipe: HPIPE; APipeContext: TPipeContext; AErrorCode: Integer) of object;
+  TOnDataSent = procedure(APipe: HPIPE; ASize: DWORD);
+  TOnCreateDC = procedure(APrintNotification: TPrintNotification);
+  TOnStartDoc = procedure(APrintNotification: TPrintNotification);
+  TOnStartPage = procedure(APrintNotification: TPrintNotification; AFirstPage: Boolean);
+  TOnEndPage = procedure(APrintNotification: TPrintNotification);
+  TOnEndDoc = procedure(APrintNotification: TPrintNotification);
+  TPrintJobControler = class
+    private
+      { Private declarations }
+      FPipe: TPipeServer;
+      FOnConnect: TOnConnect;
+      FOnDisconnect: TOnDisconnect;
+      FOnError: TOnError;
+      FOnDataSent: TOnDataSent;
+      FOnCreateDC: TOnCreateDC;
+      FOnStartDoc: TOnStartDoc;
+      FOnStartPage: TOnStartPage;
+      FOnEndPage: TOnEndPage;
+      FOnEndDoc: TOnEndDoc;
+      FFirstPage: Boolean;
+      FPagesAllowed: DWORD;
+      FPrintingReceipt: Boolean;
+      FCopies: DWORD;
+      FPagesPrinted: DWORD;
+      FPagesRejected: DWORD;
+      function GetPipeIsOpen: Boolean;
+    protected
+      { Protected declarations }
+      procedure PipeConnect(Sender: TObject; Pipe: HPIPE);
+      procedure PipeDisconnect(Sender: TObject; Pipe: HPIPE);
+      procedure PipeMessage(Sender: TObject; Pipe: HPIPE; Stream: TStream);
+      procedure PipeSent(Sender: TObject; Pipe: HPIPE; Size: DWORD);
+      procedure PipeError(Sender: TObject; Pipe: HPIPE; PipeContext: TPipeContext; ErrorCode: Integer);
+      procedure SetPipeControl(AValue: Boolean);
+      function GetPipeControl: Boolean;
+    public
+      { Public declarations }
+      constructor Create;
+      destructor Destroy; override;
+      procedure OpenPipe;
+      procedure ClosePipe;
+      property PipeOpen: Boolean read GetPipeIsOpen;
+      property PagesAllowed: DWORD read FPagesAllowed write FPagesAllowed;
+      property PrintingReceipt: Boolean read FPrintingReceipt write FPrintingReceipt;
+      property Copies: DWORD read FCopies;
+      property PagesPrinted: DWORD read FPagesPrinted;
+      property PagesRejected: DWORD read FPagesRejected;
+      property PipeControl: Boolean read GetPipeControl write SetPipeControl;
+      property OnConnect: TOnConnect read FOnConnect write FOnConnect;
+      property OnDisconnect: TOnDisconnect read FOnDisconnect write FOnDisconnect;
+      property OnDataSent: TOnDataSent read FOnDataSent write FOnDataSent;
+      property OnError: TOnError read FOnError write FOnError;
+  end;
+
+implementation
+
+constructor TPrintJobControler.Create;
+begin
+  FPipe := TPipeServer.CreateUnowned;
+  FPipe.OnPipeSent := PipeSent;
+  FPipe.OnPipeConnect := PipeConnect;
+  FPipe.OnPipeDisconnect := PipeDisconnect;
+  FPipe.OnPipeMessage := PipeMessage;
+  FPipe.OnPipeError := PipeError;
+  FPipe.PipeName := 'PrintMonitorPipe';
+  FFirstPage := TRUE;
+end;
+
+destructor TPrintJobControler.Destroy;
+begin
+  if FPipe.Active then
+    FPipe.Active := FALSE;
+  FPipe.Free;
+  inherited Destroy;
+end;
+
+
+function TPrintJobControler.GetPipeIsOpen: Boolean;
+begin
+  Result := FPipe.Active;
+end;
+
+procedure TPrintJobControler.PipeConnect(Sender: TObject; Pipe: HPIPE);
+begin
+  if Assigned(FOnConnect) then
+    FOnConnect(Pipe);
+end;
+
+procedure TPrintJobControler.PipeDisconnect(Sender: TObject; Pipe: HPIPE);
+begin
+  if Assigned(FOnDisconnect) then
+    FOnDisconnect(Pipe);
+end;
+
+procedure TPrintJobControler.PipeMessage(Sender: TObject; Pipe: HPIPE; Stream: TStream);
+var
+  LNotification: TPrintNotification;
+  LReply : TPrintReply;
+begin
+  Stream.ReadBuffer(LNotification, Sizeof(TPrintNotification));
+  case LNotification.PrintAPI of
+    paCreateDC: begin
+                  FCopies := LNotification.Copies;
+                  if Assigned(FOnCreateDC) then FOnCreateDC(LNotification);
+                end;
+    paStartDoc: if Assigned(FOnStartDoc) then FOnStartDoc(LNotification);
+    paStartPage: begin
+                   if Assigned(FOnStartPage) then FOnStartPage(LNotification, FFirstPage);
+                   FFirstPage := FALSE;
+                 end;
+    paEndPage: if Assigned(FOnEndPage) then FOnEndPage(LNotification);
+    paEndDoc: begin
+                FFirstPage := TRUE;
+                FPagesPrinted := LNotification.NumberOfPagesPrinted;
+                FPagesRejected := LNotification.NumberOfPagesRejected;
+                if Assigned(FOnEndPage) then FOnEndPage(LNotification);
+                FFirstPage := TRUE;
+              end;
+  end;
+  if FPrintingReceipt then
+    LReply.PrintingReceipt := 1
+  else
+    LReply.PrintingReceipt := 0;
+
+  LReply.AllowedPages := FPagesAllowed;
+
+  FPipe.Write(Pipe, LReply, Sizeof(LReply));
+end;
+
+procedure TPrintJobControler.PipeSent(Sender: TObject; Pipe: HPIPE; Size: DWORD);
+begin
+  if Assigned(FOnDataSent) then
+    FOnDataSent(Pipe, Size);
+end;
+
+procedure TPrintJobControler.PipeError(Sender: TObject; Pipe: HPIPE; PipeContext: TPipeContext; ErrorCode: Integer);
+begin
+  if Assigned(FOnError) then
+    FOnError(Pipe, PipeContext, ErrorCode);
+end;
+
+procedure TPrintJobControler.SetPipeControl(AValue: Boolean);
+var
+  LReg : TRegistry;
+begin
+  LReg := TRegistry.Create;
+  try
+    LReg.RootKey := HKEY_LOCAL_MACHINE;
+    if LReg.OpenKey(SERVICE_PRINTER_IPC_REG_KEY, TRUE) then
+    begin
+      if AValue then
+        LReg.WriteInteger('PipeControl', 1)
+      else
+        LReg.WriteInteger('PipeControl', 0);
+    end;
+  finally
+    LReg.Free;
+  end;
+end;
+
+function TPrintJobControler.GetPipeControl: Boolean;
+var
+  LReg : TRegistry;
+begin
+  Result := FALSE;
+  LReg := TRegistry.Create(KEY_READ);
+  try
+    LReg.RootKey := HKEY_LOCAL_MACHINE;
+    if LReg.OpenKey(SERVICE_PRINTER_IPC_REG_KEY, FALSE) then
+    begin
+      if LReg.ValueExists('PipeControl') then
+        Result := (0 <> LReg.ReadInteger('PipeControl'));
+    end;
+  finally
+    LReg.Free;
+  end;
+end;
+
+procedure TPrintJobControler.OpenPipe;
+begin
+  FPipe.Active := TRUE;
+end;
+
+procedure TPrintJobControler.ClosePipe;
+begin
+  FPipe.Active := FALSE;
+end;
+
+end.
